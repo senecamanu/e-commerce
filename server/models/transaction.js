@@ -3,7 +3,12 @@ const mongoose = require('mongoose'),
 
 const userSchema = new Schema({
   customerId: { type: Schema.Types.ObjectId, ref: 'Customer' },
-  itemsId: [{ type: Schema.Types.ObjectId, ref: 'Item' }],
+  itemsId: [
+    {
+      itemId: { type: Schema.Types.ObjectId, ref: 'Item' },
+      amount: Number
+    }
+  ],
   totalPrice: Number,
   purchaseDate: Date
 });

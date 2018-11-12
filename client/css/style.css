@@ -50,3 +50,24 @@
 .text-center {
   text-align: center;
 }
+
+.inline-icon {
+   vertical-align: bottom;
+   font-size: 18px !important;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.wrapper {
+    padding-left: 300px;
+}
+
+.side-nav{
+    top: 65px;
+    width: 250px;
+}

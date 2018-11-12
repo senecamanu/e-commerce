@@ -1,312 +1,443 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
   <title>Coffea</title>
 
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/css?family=Krub:400,600" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="./css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <link href="./css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
 </head>
+
 <body>
-  <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="js/materialize.js"></script>
-  <script src="js/init.js"></script>
+  <div id="app">
 
-  <!-- HEADER -->
-  <header>
-    <nav class="green lighten-2" role="navigation">
-      <div class="nav-wrapper container"><a id="logo-container" href="./index.html" class="brand-logo">COFFEA</a>
-        <ul class="right hide-on-med-and-down">
-          <li><a href="#" class="tooltipped" data-position="bottom" data-tooltip="Search"><i class="material-icons">search</i></a></li>
-          <li><a href="./learn.html"class="tooltipped" data-position="bottom" data-tooltip="Learn"><i class="material-icons">map</i></a></li>
-          <li><a href="./cart.html"class="tooltipped" data-position="bottom" data-tooltip="Cart"><i class="material-icons">shopping_cart</i></a></li>
-        </ul>
-        <ul id="nav-mobile" class="sidenav">
-          <li><a href="#"><i class="material-icons">map</i>Become A Coffee Artisan</a></li>
-          <li><a href="#"><i class="material-icons">shopping_cart</i>Shopping Cart</a></li>
-        </ul>
-        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-      </div>
-    </nav>
-  </header>
+    <!-- ? Header -->
+    <header class="navbar">
+      <nav class="green lighten-2" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="./index.html" class="brand-logo">COFFEA</a>
 
-  <main>
-    <!-- CAROUSEL -->
-    <div class="carousel carousel-slider">
-      <a class="carousel-item" href="#one!"><img src="https://static.businessinsider.sg/sites/2/2017/12/5a3b4057b0bcd51e008b666e.jpg"></a>
-      <a class="carousel-item" href="#two!"><img src="http://blog.italcoffee.com/wp-content/uploads/2013/10/chemex.jpg"></a>
-      <a class="carousel-item" href="#three!"><img src="https://downshiftology.com/wp-content/uploads/2017/05/Chemex-Coffee-Brewing-14.jpg"></a>
-      <a class="carousel-item" href="#four!"><img src="https://freshoffthegrid.com/wp-content/uploads/2017/07/how-to-make-coffee-while-camping.jpg"></a>
-    </div>
+          <ul class="right hide-on-med-and-down">
 
-    <!-- INTERESTED IN LEARNING? -->
-    <div class="container">
-      <div class="section no-pad-bot" id="index-banner">
-        <div class="container">
-          <br><br>
-          <h3 class="header center brown-text">Interested in Learning?</h3>
-          <div class="row center">
-            <p class="header col s12 light">We provide free courses for all skill-levels</p>
-          </div>
-          <div class="row center">
-            <a href="./learn.html" id="download-button" class="btn waves-effect waves-light green lighten-2 z-depth-3">AeroPress 101</a>
-          </div>
-        </div>
-      </div>
-    </div>
+            <li v-if="login === `User`"><a href="./learn.html" class="tooltipped" data-position="bottom" data-tooltip="Learn"><i class="material-icons">map</i></a></li>
 
-    <br><br><br><br>
+            <li v-if="login === `User`"><a href="#checkOutModal" class="modal-trigger" @click="cartListFiller()"><i class="material-icons">shopping_cart</i></a></li>
 
-    <div class="container">
-      <div class="row">
-        <div class="col s12">
-          <ul class="tabs">
-            <li class="tab col s4"><a href="#coffeeBeans">Coffee Beans & Equipments</a></li>
-            <li class="tab col s4"><a href="#brewersEquipments">Brewers & Equipments</a></li>
-            <li class="tab col s4"><a href="#tools">Tools</a></li>
+            <li v-if="login === `User`"><a href="#" class="modal-trigger" @click="cartListFiller()">{{ cartAmount }}</a></li>
+            
+            <li v-if="login === `false`"><a href="#signInModal" class="modal-trigger">Sign In</a></li>
+            
+            <li v-if="login === `false`"><a href="#signUpModal" class="modal-trigger">Sign Up</a></li>
+
+            <li v-if="login === `false`"><a href="#adminSignUpModal" class="modal-trigger red-text">Sign Up</a></li>
+
+            <li v-if="login === `false`"><a href="#adminSignInModal" class="modal-trigger red-text">Sign In</a></li>
+
+            <!-- ? Add category -->
+            <li v-if="login === `Admin`"><a href="#adminCreateCategory" class="modal-trigger" @click=""><i class="material-icons">library_add</i></a></li>
+
+            <!-- ? Add Item -->
+            <li v-if="login === `Admin`"><a href="#adminAddItem" class="modal-trigger" @click=""><i class="material-icons">add_box</i></a></li>
+
+            <li v-if="login !== `false`"><a href="#" @click='signOut()'>Sign Out</a></li>
           </ul>
         </div>
+      </nav>
+    </header>
 
-        <div id="coffeeBeans" class="col">
+    <main>
 
-          <div class="container">
-            <div class="row">
+      <!-- ? Carousel -->
+      <div class="carousel carousel-slider">
+        <a class="carousel-item" href="#one!"><img src="https://static.businessinsider.sg/sites/2/2017/12/5a3b4057b0bcd51e008b666e.jpg"></a>
+        <a class="carousel-item" href="#two!"><img src="http://blog.italcoffee.com/wp-content/uploads/2013/10/chemex.jpg"></a>
+        <a class="carousel-item" href="#three!"><img src="https://downshiftology.com/wp-content/uploads/2017/05/Chemex-Coffee-Brewing-14.jpg"></a>
+        <a class="carousel-item" href="#four!"><img src="https://freshoffthegrid.com/wp-content/uploads/2017/07/how-to-make-coffee-while-camping.jpg"></a>
+      </div>
 
-              <br><br><br>
+      <div class="container">
 
-              <div class="col cards-container">
+        <!-- ? Entire Product Data-->
+        <div class="row">
 
-                <div class="card">
-                  <div class="card-image">
-                    <a href="./product-pages/products.html">
-                      <img src="https://cdn-starbucks.netdna-ssl.com/uploads/images/_framed/e8tVlARl-4500-3000.JPG" class="materialboxed">
-                      <span class="card-title">Single Origin</span>
-                    </a>
-                  </div>
-                </div>
-
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="http://www.thinktankcoffee.com.au/img/ninety-plus-img.jpg" class="materialboxed">
-                      <span class="card-title">Ninety Plus</span>
-                    </a>
-                  </div>
-                </div>
-
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://www.savorysimple.net/v1/wp-content/uploads/2017/06/1-Savory-Simple-Recipe-Milk-Panna-Cotta-with-Coffee-62.jpg" class="materialboxed">
-                      <span class="card-title">Coffee Syrup</span>
-                    </a>
-                  </div>
-                </div>
-
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="http://cdn.shopify.com/s/files/1/2204/0777/products/Green-Coffee-Beans-Svetol_ace2cb84-17bf-43b8-a8aa-0e9403d32db3_1024x1024.jpg?v=1518106959" class="materialboxed">
-                      <span class="card-title">Green Coffee</span>
-                    </a>
-                  </div>
-                </div>
-
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://cdn.shopify.com/s/files/1/0770/0249/products/fullsizeoutput_1610_2000x.jpeg?v=1490078880" class="materialboxed">
-                      <span class="card-title">Drip Coffee</span>
-                    </a>
-                  </div>
-                </div>
-
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://cdn.shopify.com/s/files/1/1003/7044/files/unroasted_coffee_beans_raw_coffee_beans_whole_bean_coffee_ground_coffee_nespresso_pods_nespresso_capsules_coffee_pods_coffee_capsules_large.jpg?v=1519926959" class="materialboxed">
-                      <span class="card-title">Capsule Coffee</span>
-                    </a>
-                  </div>
-                </div>
-
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://www.vilvakart.in/image/cache/catalog/madras-delicacy/coffee/coffee-powder-online-shopping-601x601.jpg" class="materialboxed">
-                      <span class="card-title">Powder Coffee</span>
-                    </a>
-                  </div>
-                </div>
-
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://www.expertmarket.com/sites/default/files/filemanager/coffee-beans.jpg" class="materialboxed">
-                      <span class="card-title">Commercial Coffee Beans</span>
-                    </a>
-                  </div>
-                </div>
-
-                </div>
-
+          <!-- ? Category Filter -->
+          <!-- <div class="col s12" style="margin-top: 5.2%">
+            <div class="card hoverable">
+              <div class="collection">
+                <a href="#!" class="collection-item" @click="categoryFilter(``)">Show All</a>
+                <a href="#!" class="collection-item" v-for="category in categories" @click="categoryFilter( category.value )">{{
+                  category.showName }}</a>
               </div>
             </div>
-        </div>
-        <div id="brewersEquipments" class="col">
-          <div class="container">
-            <div class="row">
-          
-              <br><br><br>
-          
-              <div class="col cards-container">
-          
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://www.gaggia-usa.com/media/catalog/product/cache/image/560x560/beff4985b56e3afdbeabfc89641a4582/v/e/velasca_295x295_1.jpg" class="materialboxed">
-                      <span class="card-title">Automatic Espresso Machines</span>
-                    </a>
-                  </div>
-                </div>
-          
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://cnet2.cbsistatic.com/img/Ync4Fl2tD38wqsKjq5aksCJVeXg=/830x467/2016/03/09/73276272-f9cd-4728-aac1-9b010fecf292/behmor-brazen-connected-coffee-maker-product-photos-1.jpg" class="materialboxed">
-                      <span class="card-title">Coffee Maker</span>
-                    </a>
-                  </div>
-                </div>
-          
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://i.ytimg.com/vi/EFVkId6GNb0/maxresdefault.jpg" class="materialboxed">
-                      <span class="card-title">Manual Coffee Maker</span>
-                    </a>
-                  </div>
-                </div>
-          
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://images.crateandbarrel.com/is/image/Crate/BodumElectricBurrCfeGrndrSHF16/?$web_product_hero$&160819084857&wid=625&hei=625" class="materialboxed">
-                      <span class="card-title">Electric Coffee Grinder</span>
-                    </a>
-                  </div>
-                </div>
-          
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://www.holar.com.tw/wp-content/uploads/2017/06/coffeeblog-cover-1.jpg" class="materialboxed">
-                      <span class="card-title">Manual Coffee Grinder</span>
-                    </a>
-                  </div>
-                </div>
+          </div> -->
 
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://www.flyingsquirrel.in/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/a/e/aerobie-aeropress.jpg" class="materialboxed">
-                      <span class="card-title">Aeropress</span>
-                    </a>
-                  </div>
-                </div>
+          <!-- ? Category Filter 2 -->
+          <div class="col s12" style="margin-top: 5.2%">
+            <select class="browser-default" v-model="categoryFilter" v-on:change="onCategoryChange">
+              <option value="" selected>Show All</option>
+              <option v-for="category in categories" v-bind:value="category.value">{{ category.showName }}</option>
+            </select>
+          </div>
 
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://static1.squarespace.com/static/53bc51c0e4b0e16f33117588/5a031f764192021db9eb8a0c/5a1bbca6c83025aa86830978/1527459089608/IMG_0111.jpg" class="materialboxed">
-                      <span class="card-title">Cold Brewers</span>
-                    </a>
-                  </div>
-                </div>
+          <br><br><br>
 
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://i0.wp.com/www.thecoffeecompass.com/wp-content/uploads/moka-pot.jpg?ssl=1" class="materialboxed">
-                      <span class="card-title">Mokapot</span>
-                    </a>
-                  </div>
-                </div>
-
+          <!-- ? Each Product -->
+          <div v-for="product in filteredList" class="col s12 m4 l3">
+            <div class="card hoverable">
+              <div class="card-image">
+                <img v-bind:src="product.name">
+                <!-- ? add to cart -->
+                <a v-if="login === `User`" class="btn-floating halfway-fab waves-effect waves-light red" @click="addToCart(product._id)">
+                  <i class="material-icons">add</i>
+                </a>
+                <!-- ? Edit for admin -->
+                <a href="#editItemModal" v-if="login === `Admin`" class="btn-floating halfway-fab waves-effect waves-light red modal-trigger" @click="editItemModal(product._id)">
+                  <i class="material-icons">edit</i>
+                </a>
               </div>
-          
+              <div class="card-content">
+                <h6 class="truncate">{{ product.image }}</h6>
+                <h6>Stock: {{ product.stock }}</h6>
+                <h6 class="red-text">{{ product.price }}</h6>
+              </div>
             </div>
           </div>
-        </div>
-        <div id="tools" class="col">
-          <div class="container">
-            <div class="row">
-          
-              <br><br><br>
-          
-              <div class="col cards-container">
-          
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://ecs7.tokopedia.net/img/cache/700/product-1/2017/10/18/1893344/1893344_c30ec81f-6471-450d-9c50-bf2c42aac6bf" class="materialboxed">
-                      <span class="card-title">Digital Coffee Scale</span>
-                    </a>
-                  </div>
-                </div>
-          
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://cdn.instructables.com/F58/N1WD/HAQ3A8CD/F58N1WDHAQ3A8CD.LARGE.jpg" class="materialboxed">
-                      <span class="card-title">Coffee Knock Box</span>
-                    </a>
-                  </div>
-                </div>
-          
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://i.ytimg.com/vi/-TDEpL8xG64/maxresdefault.jpg" class="materialboxed">
-                      <span class="card-title">Grind Tamper</span>
-                    </a>
-                  </div>
-                </div>
-          
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="http://img.dxcdn.com/productimages/sku_916591862_1.jpg" class="materialboxed">
-                      <span class="card-title">Shots</span>
-                    </a>
-                  </div>
-                </div>
-          
-                <div class="card">
-                  <div class="card-image">
-                    <a href="#">
-                      <img src="https://foodal.com/wp-content/uploads/2015/07/Choosing-the-Best-Portafilter-for-Your-Espresso-Machine.jpg" class="materialboxed">
-                      <span class="card-title">Portafilter</span>
-                    </a>
-                  </div>
-                </div>
-          
-              </div>
-          
-            </div>
+        </div> <br><br>
+      </div>
+
+  <!-- ? User Sign Up Modal -->
+  <div id="signUpModal" class="modal">
+    <div class="modal-content center-align">
+      <h5>Sign Up</h5>
+      <p>Register your account to enjoy our products effortlessly.</p>
+
+      <form v-on:submit.prevent="onSubmit">
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="first_name" type="text" class="validate" ref="firstName">
+            <label for="first_name">First Name</label>
+          </div>
+          <div class="input-field col s6">
+            <input id="last_name" type="text" class="validate" ref="lastName">
+            <label for="last_name">Last Name</label>
           </div>
         </div>
+
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="email" type="email" class="validate" ref="email" autocomplete="email">
+            <label for="email">Email</label>
+            <span class="helper-text left-align" data-error="This is not a valid email" data-success="">We will not
+              share
+              your email.</span>
+          </div>
+          
+          <div class="input-field col s6">
+            <input id="password" type="password" class="validate" ref="password" autocomplete="current-password">
+            <label for="password">Password</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12">
+
+            <small class="grey-text">We may use your email and devices for updates and tips on Coffea's products and
+              services, and for activities notifications. You can unsubscribe for free at any time in your notification
+              settings. We may use information you provide us in order to show you targeted ads as described in our <a
+                href="#">Privacy
+                Policy</a>.
+            </small>
+
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="waves-effect waves-green btn-flat" id="submitCreateAccount" @click.prevent="signUpFormSubmit()">Submit</button>
+        </div>
+      </form>
+
+
     </div>
 
+  </div>
 
+  <!-- ? User Sign In Modal -->
+  <div id="signInModal" class="modal">
+    <div class="modal-content center-align">
+      <h5>Sign In</h5>
+      <p>Sign in now!</p>
+  
+      <form v-on:submit.prevent="onSubmit">
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="emailSignIn" type="email" class="validate" ref="emailSignIn" autocomplete="email">
+            <label for="emailSignIn">Email</label>
+            <span class="helper-text left-align" data-error="This is not a valid email" data-success="">We will not
+              share
+              your email.</span>
+          </div>
+  
+          <div class="input-field col s6">
+            <input id="passwordSignIn" type="password" class="validate" ref="passwordSignIn" autocomplete="current-password">
+            <label for="passwordSignIn">Password</label>
+          </div>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="submit" class="waves-effect waves-green btn-flat" id="signInFormSubmit" @click.prevent="signInFormSubmit()">Sign In</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ? Admin Sign Up Modal -->
+  <div id="adminSignUpModal" class="modal">
+    <div class="modal-content center-align">
+      <h5>Admin Sign Up</h5>
+      <p>Register your account to monitor and control transactions.</p>
+  
+      <form v-on:submit.prevent="onSubmit">
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="adminFirstName" type="text" class="validate" ref="adminFirstName">
+            <label for="adminFirstName">First Name</label>
+          </div>
+          <div class="input-field col s6">
+            <input id="adminLastName" type="text" class="validate" ref="adminLastName">
+            <label for="adminLastName">Last Name</label>
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="adminEmail" type="email" class="validate" ref="adminEmail" autocomplete="email">
+            <label for="adminEmail">Email</label>
+            <span class="helper-text left-align" data-error="This is not a valid email" data-success="">We will not
+              share
+              your email.</span>
+          </div>
+  
+          <div class="input-field col s6">
+            <input id="adminPassword" type="password" class="validate" ref="adminPassword" autocomplete="current-password">
+            <label for="adminPassword">Password</label>
+          </div>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="submit" class="waves-effect waves-green btn-flat" id="adminSubmitCreateAccount" @click.prevent="adminSignUpFormSubmit()">Submit</button>
+        </div>
+      </form>
+  
+  
+    </div>
+  
+  </div>
+
+  <!-- ? Admin Sign In Modal -->
+  <div id="adminSignInModal" class="modal">
+    <div class="modal-content center-align">
+      <h5>Admin Sign In</h5>
+  
+      <form v-on:submit.prevent="onSubmit">
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="adminEmailSignIn" type="email" class="validate" ref="adminEmailSignIn" autocomplete="email">
+            <label for="adminEmailSignIn">Email</label>
+            <span class="helper-text left-align" data-error="This is not a valid email" data-success="">We will not
+              share
+              your email.</span>
+          </div>
+  
+          <div class="input-field col s6">
+            <input id="adminPasswordSignIn" type="password" class="validate" ref="adminPasswordSignIn" autocomplete="current-password">
+            <label for="adminPasswordSignIn">Password</label>
+          </div>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="submit" class="waves-effect waves-green btn-flat" id="AdminSignIn" @click.prevent="adminSignInFormSubmit()">Sign
+            In</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ? Checkout Modal -->
+  <div id="checkOutModal" class="modal">
+    <div class="modal-content center-align">
+      <h5>Checkout</h5>
+
+      <form v-on:submit.prevent="onSubmit">
+        <div class="row">
+
+          <!-- ? For each product in cart -->
+          <div v-for="product in cartList.cart" class="col s12 m4">
+            <div class="card hoverable">
+              <div class="card-image">
+                <img v-bind:src="product.itemId.name">
+                <!-- add to cart -->
+                <!-- <a v-if="login !== `false`" class="btn-floating halfway-fab waves-effect waves-light red" @click="addToCart(product._id)">
+                  <i class="material-icons">add</i>
+                </a> -->
+              </div>
+              <div class="card-content left-align">
+                <h6 class="truncate">{{ product.itemId.image }}</h6>
+                <br>
+                <h6 class="">Amount: {{ product.amount }}</h6>
+                <h6 class="red-text">Subtotal: {{ RupiahParse(product.itemId.price * product.amount) }}</h6>
+              </div>
+            </div>
+          </div>
+
+          <div class="col s12">
+            <div class="card">
+              <div class="card-content">
+                <h6>Total Purchase</h6>
+                <h5 class="red-text">{{ rupiahParse(cartTotalPrice) }}</h5>
+                <br>
+                <a class="waves-effect waves-light btn red" @click="checkout()">Checkout</a>
+              </div>
+            </div>
+          
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ? Create Category Modal -->
+  <div id="adminCreateCategory" class="modal">
+    <div class="modal-content center-align">
+      <h5>Create A Category</h5>
+      <form v-on:submit.prevent="onSubmit">
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="categoryName" type="text" class="validate" ref="categoryName">
+            <label for="categoryName">Name</label>
+            <span class="helper-text left-align">Highly suggested in using kebab-case category name. ("single-origin" or "omu-rice")</span>
+          </div>
+        </div>
+      
+        <div class="modal-footer">
+          <button type="submit" class="waves-effect waves-green btn-flat" id="signInCreateAccount" @click.prevent="createCategory()">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ? Create Item Modal -->
+  <div id="adminAddItem" class="modal">
+    <div class="modal-content center-align">
+      <h5>Add An Item</h5>
+      <form v-on:submit.prevent="onSubmit" enctype="multipart/form-data">
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="createItemName" type="text" class="validate" ref="createItemName">
+            <label for="createItemName">Name</label>
+          </div>
+          <div class="input-field col s6">
+            <select class="browser-default" ref="createItemCategory">
+              <option v-for="category in categories" v-bind:value="category.categoryId">{{ category.showName }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="createItemPrice" type="number" class="validate" ref="createItemPrice">
+            <label for="createItemPrice">Price</label>
+          </div>
+          <div class="input-field col s6">
+            <input id="createItemStock" type="number" class="validate" ref="createItemStock">
+            <label for="createItemStock">Stock</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s12">
+            <div class="file-field input-field">
+              <div class="btn">
+                <span>File</span>
+                <input type="file" name="createItemImage" accept="image/*" ref="createItemImage">
+              </div>
+              <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" placeholder="Upload product image">
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="submit" class="waves-effect waves-green btn-flat" id="" @click.prevent="createItem()">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ? Edit Product Modal -->
+  <div id="editItemModal" class="modal">
+    <div class="modal-content center-align">
+      <h5>{{ editModalItem.image }}</h5>
+      <form v-on:submit.prevent="onSubmit" enctype="multipart/form-data">
+        
+        <div class="row">
+          <!-- Name (as image) -->
+          <div class="input-field col s6">
+            <input id="editItemImage" type="text" class="validate" ref="editItemImage" v-bind:value="editModalItem.image">
+          </div>
+          <div class="input-field col s6">
+            <!-- Category -->
+            <select class="browser-default" ref="editItemCategory">
+              <option 
+              v-for="category in categories" 
+              v-bind:value="category.categoryId"
+              :selected="category.value === editModalItem.category ? 'selected' : null"
+              >{{ category.showName }}</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="row">
+          <!-- Price -->
+          <div class="input-field col s6">
+            <input id="editItemPrice" type="number" class="validate" ref="editItemPrice" v-bind:value="editModalItem.price">
+          </div>
+          <!-- Stock -->
+          <div class="input-field col s6">
+            <input id="editItemStock" type="number" class="validate" ref="editItemStock" v-bind:value="editModalItem.stock">
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="input-field col s12">
+            <!-- Image -->
+            <div class="file-field input-field">
+              <div class="btn">
+                <span>File</span>
+                <input type="file" name="editItemName" accept="image/*" ref="editItemName">
+              </div>
+              <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" placeholder="Upload product image">
+              </div>
+            </div>
+          </div>
+        </div>
+    
+        <div class="modal-footer">
+          <button type="submit" class="waves-effect waves-green btn-flat" @click.prevent="deleteItemSubmit(editModalItem.itemId)">Delete</button>
+          <button type="submit" class="waves-effect waves-green btn-flat" @click.prevent="editItemSubmit(editModalItem.itemId)">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
   </main>
 
-  <!-- FOOTER -->
+  <!-- ? Footer -->
   <footer class="page-footer green lighten-2">
     <div class="container">
       <div class="row">
@@ -332,13 +463,21 @@
     </div>
     <div class="footer-copyright">
       <div class="container">
-      Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+        By <a class="orange-text text-lighten-3" href="http://senecamanu.com">Seneca Manu</a>
       </div>
     </div>
   </footer>
 
+  </div>
 
-  
+  <!-- ? Script -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="./js/materialize.js"></script>
+  <script src="./js/init.js"></script>
+  <script src="./vue/vue.js "></script>
 
-  </body>
+</body>
+
 </html>

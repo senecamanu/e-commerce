@@ -1,7 +1,7 @@
 const axios = require('axios'),
       Item = require('../models/item'),
       User = require('../models/user'),
-      Admin = require('../models/admin'),
+      // Admin = require('../models/admin'),
       Transaction = require('../models/transaction'),
       cart = require('../models/cart'),
       Category = require('../models/category'),
@@ -76,6 +76,7 @@ class ItemController {
 
     newCategory.save()
       .then(data => {
+        console.log(data)
         res.json({
           message: "Success",
           data: data

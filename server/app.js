@@ -1,11 +1,11 @@
 // ! BASIC CONFIG
 const express = require('express'),
-  app = express(),
-  port = process.env.PORT || 3030,
-  routes = require('./routes'),
-  cors = require('cors'),
-  // gal = require('google-auth-library'),
-  mongoose = require('mongoose')
+      app = express(),
+      port = process.env.PORT || 3030,
+      routes = require('./routes'),
+      cors = require('cors'),
+      // gal = require('google-auth-library'),
+      mongoose = require('mongoose')
 
 app.use(cors())
 app.use(express.json()); // for parsing application/json

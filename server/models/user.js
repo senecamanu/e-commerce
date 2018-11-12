@@ -3,14 +3,16 @@ const mongoose = require('mongoose'),
 
 const userSchema = new Schema({
   name: String,
-  gender: String,
-  phone: Number,
+  role: String,
   email: String,
   password: String,
   salt: String,
-  address: String,
-  zipCode: Number,
-  isLogin: Boolean
+  cart: [
+    {
+      itemId: { type: Schema.Types.ObjectId, ref: "Item" },
+      amount: Number
+    }
+  ]
 });
 
 const User = mongoose.model('User', userSchema);

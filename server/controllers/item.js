@@ -1,7 +1,7 @@
 const axios = require('axios'),
       Item = require('../models/item'),
       User = require('../models/user'),
-      Admin = require('../models/admin'),
+      // Admin = require('../models/admin'),
       Transaction = require('../models/transaction'),
       cart = require('../models/cart'),
       Category = require('../models/category'),
@@ -49,7 +49,7 @@ class ItemController {
 
   // R3
   static findOne(req, res) {
-    Item.find({ _id: ObjectId(req.params.id) })
+    Item.findOne({ _id: ObjectId(req.params.id) })
       .exec((err, result) => {
         err ?
           res.status(500).json({
@@ -66,13 +66,15 @@ class ItemController {
   // C1
   static create(req, res) {
     const inp = req.body
+    console.log(inp)
     const newItem = new Item({
       name: inp.name,
-      price: Number(inp.price),
-      stock: Number(inp.stock),
+      price: inp.price,
+      stock: inp.stock,
       image: inp.image,
-      category: inp.category
-    })
+      category: ObjectId(inp.category),
+      deleted: false
+    });
 
     newItem.save()
       .then(result => {
@@ -91,7 +93,7 @@ class ItemController {
     const inp = req.body
     Item.update(
         { _id: ObjectId(req.params.id) },
-        { $set: req.body },
+        { $set: inp },
         (err, result) => {
           err ?
             res.status(500).json({
@@ -108,7 +110,7 @@ class ItemController {
 
   // D1
   static delete(req, res) {
-    Item.deleteOne({ _id: ObjectId(req.params.id) },
+    Item.deleteOne({ _id: ObjectId(req.params.id)},
     (err, result) => {
       err ?
         res.status(500).json({
@@ -120,6 +122,26 @@ class ItemController {
           result: result
         })
     })
+  }
+
+  // D2
+  static pseudoDelete(req, res) {
+    const inp = req.body;
+    Item.update(
+      { _id: ObjectId(req.params.id) },
+      { $set: inp },
+      (err, result) => {
+        err ?
+          res.status(500).json({
+            message: "Error",
+            error: err
+          }) :
+          res.json({
+            message: "Success",
+            result: result
+          })
+      }
+    )
   }
 }
 
